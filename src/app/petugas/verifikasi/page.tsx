@@ -34,7 +34,7 @@ export default function VerifikasiPage() {
   );
 
   return (
-    <PetugasLayout active="verifikasi">
+    <PetugasLayout>
       <div className="p-4">
         <h1 className="text-xl font-bold mb-4">✅ Verifikasi Laporan</h1>
 
