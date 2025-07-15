@@ -5,7 +5,18 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-const dummyData = [
+type ItemData = {
+  id: number;
+  nama: string;
+  nomorSeri: string;
+  status: string;
+  foto: string;
+  nomorBAST: string;
+  tanggalBAST: string;
+  fileBAST: string;
+};
+
+const dummyData: ItemData[] = [
   {
     id: 1,
     nama: "Helm APD",
@@ -30,14 +41,14 @@ const dummyData = [
 
 export default function PenerimaanPage() {
   const router = useRouter();
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [modalType, setModalType] = useState(null);
+  const [selectedItem, setSelectedItem] = useState<ItemData | null>(null);
+  const [modalType, setModalType] = useState<"terima" | "rusak" | null>(null);
 
-  const handleItemClick = (id) => {
+  const handleItemClick = (id: number) => {
     router.push(`/petugas/penerimaan/${id}`);
   };
 
-  const handleOpenModal = (item, type) => {
+  const handleOpenModal = (item: ItemData, type: "terima" | "rusak") => {
     setSelectedItem(item);
     setModalType(type);
   };

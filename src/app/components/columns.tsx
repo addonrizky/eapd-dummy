@@ -1,4 +1,3 @@
-// components/bast-columns.tsx
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
@@ -55,12 +54,14 @@ export const columns: ColumnDef<BastData>[] = [
     accessorKey: "file",
     header: "File",
     cell: ({ row }) => {
-      const file = row.getValue("file")
+      const file = row.original.file
+
       return file ? (
         <a
           href={file}
           className="text-blue-600 underline text-sm"
           target="_blank"
+          rel="noopener noreferrer"
         >
           Lihat File
         </a>

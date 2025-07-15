@@ -3,7 +3,7 @@ import Sidebar from "./Sidebar";
 
 type Props = {
   children: React.ReactNode;
-  activeSidebar?: "upload" | "distribusi";
+  activeSidebar?: "upload" | "distribusi" | "monitoring" | "review" | "";
 };
 
 export default function LayoutShell({ children, activeSidebar = "upload" }: Props) {
