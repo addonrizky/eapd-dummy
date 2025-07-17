@@ -20,6 +20,7 @@ const tableData = [
     tujuan: 'Jakarta Selatan',
     didistribusi: 190,
     diterima: 150,
+    tahun: 2024,
   },
   {
     name: 'Sepatu Safety',
@@ -28,6 +29,7 @@ const tableData = [
     tujuan: 'Jakarta Barat',
     didistribusi: 120,
     diterima: 0,
+    tahun: 2023,
   },
   {
     name: 'Sarung Tangan',
@@ -36,6 +38,7 @@ const tableData = [
     tujuan: 'Pusdiklatkar',
     didistribusi: 75,
     diterima: 75,
+    tahun: 2024,
   },
   {
     name: 'Helm Pemadam',
@@ -44,23 +47,34 @@ const tableData = [
     tujuan: 'Jakarta Barat',
     didistribusi: 100,
     diterima: 80,
+    tahun: 2023,
   },
 ]
 
 export default function MonitoringDistribusiPage() {
   const [wilayah, setWilayah] = useState('semua')
+  const [tahun, setTahun] = useState('semua')
 
-  const distributionData = tableData.map((item) => ({
+  const wilayahList = [...new Set(tableData.map((item) => item.tujuan))]
+  const tahunList = [...new Set(tableData.map((item) => item.tahun))]
+
+  const filteredData = tableData.filter(
+    (item) =>
+      (wilayah === 'semua' || item.tujuan === wilayah) &&
+      (tahun === 'semua' || item.tahun === parseInt(tahun))
+  )
+
+  const distributionData = filteredData.map((item) => ({
     name: item.name,
     didistribusi: item.didistribusi,
     diterima: item.diterima,
   }))
 
-  const barangList = [...new Set(tableData.map((item) => item.name))]
-  const wilayahList = [...new Set(tableData.map((item) => item.tujuan))]
+  const barangList = [...new Set(filteredData.map((item) => item.name))]
+  const filteredWilayahList = [...new Set(filteredData.map((item) => item.tujuan))]
 
   const persebaranByBarang = barangList.map((barang) => {
-    const items = tableData.filter((item) => item.name === barang)
+    const items = filteredData.filter((item) => item.name === barang)
     const entry: Record<string, any> = { name: barang }
     items.forEach((item) => {
       entry[item.tujuan] = item.didistribusi
@@ -75,21 +89,39 @@ export default function MonitoringDistribusiPage() {
           <h1 className="text-2xl font-bold">📦 Monitoring Distribusi Barang APD</h1>
         </div>
 
-        {/* Filter Wilayah */}
+        {/* Filter Wilayah & Tahun */}
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-          <label className="text-sm font-medium">Pilih Wilayah:</label>
-          <select
-            value={wilayah}
-            onChange={(e) => setWilayah(e.target.value)}
-            className="border rounded px-3 py-2 text-sm"
-          >
-            <option value="semua">Semua Wilayah</option>
-            {wilayahList.map((w) => (
-              <option key={w} value={w}>
-                {w}
-              </option>
-            ))}
-          </select>
+          <div className="flex flex-col">
+            <label className="text-sm font-medium">Pilih Wilayah:</label>
+            <select
+              value={wilayah}
+              onChange={(e) => setWilayah(e.target.value)}
+              className="border rounded px-3 py-2 text-sm"
+            >
+              <option value="semua">Semua Wilayah</option>
+              {wilayahList.map((w) => (
+                <option key={w} value={w}>
+                  {w}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex flex-col">
+            <label className="text-sm font-medium">Tahun Anggaran:</label>
+            <select
+              value={tahun}
+              onChange={(e) => setTahun(e.target.value)}
+              className="border rounded px-3 py-2 text-sm"
+            >
+              <option value="semua">Semua Tahun</option>
+              {tahunList.sort((a, b) => b - a).map((t) => (
+                <option key={t} value={t}>
+                  {t}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {/* Grafik Distribusi */}
@@ -107,7 +139,7 @@ export default function MonitoringDistribusiPage() {
           </ResponsiveContainer>
         </div>
 
-        {/* Grafik Persebaran Barang per Wilayah */}
+        {/* Grafik Persebaran */}
         <div className="border rounded-lg p-4 bg-white shadow-sm">
           <h2 className="text-lg font-semibold mb-2">
             🗺️ Persebaran Barang Berdasarkan Wilayah
@@ -118,7 +150,7 @@ export default function MonitoringDistribusiPage() {
               <YAxis />
               <Tooltip />
               <Legend />
-              {wilayahList.map((wil, idx) => (
+              {filteredWilayahList.map((wil, idx) => (
                 <Bar
                   key={wil}
                   dataKey={wil}
@@ -144,35 +176,31 @@ export default function MonitoringDistribusiPage() {
               </tr>
             </thead>
             <tbody>
-              {tableData
-                .filter((item) => wilayah === 'semua' || item.tujuan === wilayah)
-                .map((item, i) => {
-                  const percent = Math.round(
-                    (item.diterima / item.jumlah) * 100
-                  )
-                  return (
-                    <tr key={i} className="border-t">
-                      <td className="px-4 py-2">{item.name}</td>
-                      <td className="px-4 py-2">{item.merk}</td>
-                      <td className="px-4 py-2">{item.jumlah}</td>
-                      <td className="px-4 py-2">{item.tujuan}</td>
-                      <td className="px-4 py-2">{item.didistribusi}</td>
-                      <td className="px-4 py-2">
-                        <span
-                          className={`px-2 py-1 rounded text-white text-xs ${
-                            percent >= 90
-                              ? 'bg-green-600'
-                              : percent >= 50
-                              ? 'bg-yellow-500'
-                              : 'bg-red-500'
-                          }`}
-                        >
-                          {percent}%
-                        </span>
-                      </td>
-                    </tr>
-                  )
-                })}
+              {filteredData.map((item, i) => {
+                const percent = Math.round((item.diterima / item.jumlah) * 100)
+                return (
+                  <tr key={i} className="border-t">
+                    <td className="px-4 py-2">{item.name}</td>
+                    <td className="px-4 py-2">{item.merk}</td>
+                    <td className="px-4 py-2">{item.jumlah}</td>
+                    <td className="px-4 py-2">{item.tujuan}</td>
+                    <td className="px-4 py-2">{item.didistribusi}</td>
+                    <td className="px-4 py-2">
+                      <span
+                        className={`px-2 py-1 rounded text-white text-xs ${
+                          percent >= 90
+                            ? 'bg-green-600'
+                            : percent >= 50
+                            ? 'bg-yellow-500'
+                            : 'bg-red-500'
+                        }`}
+                      >
+                        {percent}%
+                      </span>
+                    </td>
+                  </tr>
+                )
+              })}
             </tbody>
           </table>
         </div>

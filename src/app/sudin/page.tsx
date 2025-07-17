@@ -1,42 +1,53 @@
 'use client'
 
 import React from 'react'
-import LayoutBidSarOps from '../components/LayoutBidSarOps'
+import LayoutSudin from '../components/LayoutSudin'
 import AnggaranChart from '../components/AnggaranChart'
 import DistribusiPerSektorChart from '../components/DistribusiPerSektorChart'
 import KebutuhanPerJabatanChart from '../components/KebutuhanPerJabatanChart'
 import TimelineDistribusiChart from '../components/TimelineDistribusiChart'
 import StatusPenerimaanChart from '../components/StatusPenerimaanChart'
 import ProgressSummary from '../components/ProgressSummary'
-import InputValidasiChart from '../components/InputValidasiChart' // 👈 ditambahkan
+import InputValidasiChartSudin from '../components/InputValidasiChartSudin'
 
-export default function BidSarOpsDashboard() {
+export default function SudinDashboard() {
+  const wilayahOptions = [
+    "Sudin Jakarta Pusat",
+    "Sudin Jakarta Pusat Sektor Gambir",
+    "Sudin Jakarta Pusat Sektor Sawah Besar",
+    "Sudin Jakarta Pusat Sektor Kemayoran",
+    "Sudin Jakarta Pusat Sektor Senen",
+    "Sudin Jakarta Pusat Sektor Cempaka Putih",
+    "Sudin Jakarta Pusat Sektor Menteng",
+    "Sudin Jakarta Pusat Sektor Tanah Abang",
+    "Sudin Jakarta Pusat Sektor Johar Baru",
+    "Sudin Jakarta Pusat Seksi Operasi",
+    "Sudin Jakarta Pusat Subbagian Tata Usaha",
+    "Sudin Jakarta Pusat Seksi Sarana Operasi",
+    "Sudin Jakarta Pusat Seksi Pencegahan Kebakaran",
+  ]
+
   return (
-    <LayoutBidSarOps>
+    <LayoutSudin>
       <div className="space-y-6">
         <h1 className="text-2xl font-bold">
-          📊 Dashboard Bidang Sarana Operasi
+          📊 Dashboard Sudin Jakarta Pusat
         </h1>
 
         <p className="text-gray-700">
           Silakan pilih wilayah untuk meninjau data distribusi dan kebutuhan APD.
         </p>
 
-        {/* Dropdown Wilayah (opsional / gimmick) */}
-        <div className="max-w-xs">
+        {/* Dropdown Wilayah (gimmick only) */}
+        <div className="max-w-md">
           <label className="block mb-1 text-sm font-medium text-gray-700">
             Wilayah
           </label>
           <select className="w-full p-2 border rounded bg-white shadow-sm">
-            <option>Semua Wilayah</option>
-            <option>Kantor Dinas</option>
-            <option>Jakarta Pusat</option>
-            <option>Jakarta Utara</option>
-            <option>Jakarta Barat</option>
-            <option>Jakarta Selatan</option>
-            <option>Jakarta Timur</option>
-            <option>Pusdiklatkar</option>
-            <option>Laboratorium</option>
+            <option disabled selected>Silahkan Pilih</option>
+            {wilayahOptions.map((w) => (
+              <option key={w}>{w}</option>
+            ))}
           </select>
         </div>
 
@@ -44,7 +55,7 @@ export default function BidSarOpsDashboard() {
         <ProgressSummary />
 
         {/* 📊 Grafik Capaian Input vs Validasi */}
-        <InputValidasiChart />
+        <InputValidasiChartSudin />
 
         {/* 📊 Grafik Anggaran */}
         <AnggaranChart />
@@ -57,6 +68,6 @@ export default function BidSarOpsDashboard() {
           <StatusPenerimaanChart />
         </div>
       </div>
-    </LayoutBidSarOps>
+    </LayoutSudin>
   )
 }

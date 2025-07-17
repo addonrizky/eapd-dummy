@@ -1,8 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import LayoutBidSarOps from "../../components/LayoutBidSarOps";
 import Image from "next/image";
+import AddApdModal from "../../components/AddApdModal"; // <--- Pastikan import
 
 const dummyData = [
   {
@@ -39,17 +40,22 @@ const dummyData = [
 ];
 
 export default function BarangAPDPage() {
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false); // ← Modal state
+
   return (
     <LayoutBidSarOps>
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold">📦 Barang / Merk APD</h1>
-          <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+          <button
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            onClick={() => setIsAddModalOpen(true)} // ← Open modal
+          >
             + Tambah APD Baru
           </button>
         </div>
 
-        {/* Filter (placeholder gimmick) */}
+        {/* Filter */}
         <div className="flex flex-wrap gap-2 items-center">
           <input
             type="text"
@@ -61,10 +67,10 @@ export default function BarangAPDPage() {
             <option>Respirator</option>
             <option>Fire Goggles</option>
             <option>Balaclava</option>
-            {/* Tambah opsi lain */}
           </select>
         </div>
 
+        {/* Tabel */}
         <div className="overflow-x-auto border rounded shadow-sm">
           <table className="min-w-full text-sm">
             <thead className="bg-gray-100 text-left">
@@ -117,6 +123,9 @@ export default function BarangAPDPage() {
           </table>
         </div>
       </div>
+
+      {/* Modal Add APD */}
+      <AddApdModal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} />
     </LayoutBidSarOps>
   );
 }
